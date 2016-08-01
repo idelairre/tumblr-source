@@ -1,0 +1,9 @@
+{
+  "extends": "rackt",
+  "rules": {
+    "valid-jsdoc": 2,
+    "no-var": 0,
+    "semi": [ 2, "always" ]
+  },
+  "plugins": []
+}
