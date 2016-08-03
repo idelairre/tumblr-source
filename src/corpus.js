@@ -1,9 +1,8 @@
+import { isEqual, sortBy, union, without } from 'lodash';
+import fs from 'fs';
 import following from '../dictionary/following.json';
-import prefixesRaw from 'raw!../dictionary/prefix.txt';
-import wordsRaw from 'raw!../dictionary/words.txt';
-import censusRaw from 'raw!../dictionary/names.txt';
 
-const formatDictionary = dictionary => {
+export const formatDictionary = dictionary => {
   dictionary = dictionary.split('\n').map(word => {
     if (word.indexOf('/') !== -1) {
       return word.substring(0, word.indexOf('/'));
@@ -11,22 +10,73 @@ const formatDictionary = dictionary => {
       return word;
     }
   });
-
-  return _.without(dictionary, '', undefined);
+  return without(dictionary, '', undefined);
 }
 
 const formatNames = names => {
   return names.map(name => name.toLowerCase());
 }
 
-let dictionary = formatDictionary(wordsRaw);
-const names = formatNames(formatDictionary(censusRaw)).sort();
-const prefixes = formatDictionary(prefixesRaw);
+const generatePosHash = (input, property = false) => {
+  const tagger = new pos.Tagger();
+  const posHash = {
+    'CC': [],
+    'CD': [],
+    'DT': [],
+    'EX': [],
+    'FW': [],
+    'IN': [],
+    'JJ': [],
+    'JJR': [],
+    'JJS': [],
+    'LS': [],
+    'MD': [],
+    'NN': [],
+    'NNS': [],
+    'NNP': [],
+    'NNPS': [],
+    'PDT': [],
+    'POS': [],
+    'PRP': [],
+    'PRP$': [],
+    'RB': [],
+    'RBR': [],
+    'RBS': [],
+    'RP': [],
+    'SYM': [],
+    'TO': [],
+    'UH': [],
+    'VB': [],
+    'VBD': [],
+    'VBG': [],
+    'VBN': [],
+    'VBP': [],
+    'VBZ': [],
+    'WDT': [],
+    'WP': [],
+    'WP$': [],
+    'WRB': []
+  };
 
+  input.forEach(item => {
+    const words = new pos.Lexer().lex(property ? item[property] : item);
+    const tags = tagger.tag(words);
+    tags.forEach(tag => {
+      const key = tag[1];
+      if (posHash[key]) {
+        if (!posHash[key].includes(tag[0])) {
+          posHash[key].push(tag[0]);
+        }
+      }
+    });
+  });
 
-dictionary = _.union(dictionary, names, prefixes, ['anarcha', 'anhedonic', 'anarcho', 'alt', 'crit', 'duchamp', 'hauntology', 'goth', 'gothic', 'lenin', 'lit', 'miley', 'stoya']).sort();
+  return posHash;
+}
 
-const breakUp = (input, dictionary) => {
+// dictionary = _.union(dictionary, names, prefixes, ['anarcha', 'anhedonic', 'anarcho', 'alt', 'crit', 'duchamp', 'hauntology', 'goth', 'gothic', 'lenin', 'lit', 'miley', 'stoya']).sort();
+
+export const breakUp = (input, dictionary) => {
   if (!input) {
     console.log(`"argument ${input}" is not valid`);
     return;
@@ -44,7 +94,7 @@ const breakUp = (input, dictionary) => {
     }
   }
 
-  answer = _.sortBy(_.uniq(answer), 'length').reverse();
+  answer = sortBy(_.uniq(answer), 'length').reverse();
 
   for (let i = 0; i < answer.length; i++) {
     let word = answer[i];
@@ -52,7 +102,7 @@ const breakUp = (input, dictionary) => {
       for (let j = 0; j < answer.length; j++) {
         const test = answer[j];
         if (typeof test !== 'undefined') {
-          if (word.includes(test) && !_.isEqual(word, test)) {
+          if (word.includes(test) && !isEqual(word, test)) {
             delete answer[j];
           }
         }
@@ -63,24 +113,41 @@ const breakUp = (input, dictionary) => {
   answer = _.without(answer, undefined);
 
   let positions = [];
-  
+
   for (let i = 0; i < answer.length; i++) {
     const word = answer[i];
     const pos = input.indexOf(word);
     positions.push({ word, pos });
   }
-  positions = _.sortBy(positions, 'pos');
+  positions = sortBy(positions, 'pos');
   return positions.map(entry => {
     return entry.word;
   });
 }
 
-const generateCorpus = following => {
+export const generateCorpus = following => {
   let corpus = [];
   following.forEach(user => {
     if (typeof user !== 'undefined' && user.hasOwnProperty('name')) {
-      corpus = _.union(corpus, breakUp(user.name, dictionary));
+      corpus = union(corpus, breakUp(user.name, dictionary));
     }
   });
   return corpus;
+}
+
+export const readDictionary = (filename, encoding = 'utf8') => {
+  if (filename.match(/\.json$/)) {
+    return JSON.parse(fs.readFileSync(filename, encoding));
+  } else {
+    return fs.readFileSync(filename, encoding);
+  }
+}
+
+export const saveDictionary = (filename, dictionary) => {
+  try {
+    fs.writeFileSync(filename, JSON.stringify(dictionary));
+    console.log(`Dictionary saved at ${filename}`);
+  } catch (err) {
+    console.error(err);
+  }
 }

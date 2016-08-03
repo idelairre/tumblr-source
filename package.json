@@ -59,6 +59,7 @@
     "babel-polyfill": "^6.9.1",
     "es6-promise": "latest",
     "faker": "^3.1.0",
+    "gingerbread": "^0.5.0",
     "lodash": "^4.2.1",
     "markovchain": "^1.0.2",
     "natural": "^0.4.0",
@@ -69,8 +70,11 @@
     "random-words": "0.0.1",
     "raw-loader": "^0.5.1",
     "sentencer": "^0.1.5",
+    "speller": "^1.0.1",
+    "synaptic": "^1.0.8",
     "tensify": "0.0.2",
     "typo-js": "^1.0.1",
+    "word2vec": "^1.1.0",
     "wordnet-db": "^3.1.2",
     "wordnetjs": "^0.3.0"
   }
