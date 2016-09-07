@@ -2,7 +2,9 @@
 
 Utility to download a bunch of data from Tumblr. Basically a modular version of https://github.com/Leeiio/tumblr-downloader refactored to use events and to work in a browser environment.
 
-Includes decorators to help simplify your classes.
+The philosophy is to have a sparse and reusable class that gracefully handles Tumblr's api limits and allows you to plug in whatever fetch function you want. **Note: this does not replace the Tumblr.js client, you either need to define your own fetch method or use tumblr's client to handle ajax requests**.
+
+Also includes decorators to help simplify your classes.
 
 # Usage
 
@@ -71,6 +73,7 @@ Configuration is done by defining an `options` object in the class constructor w
 + `iterator`: the property you want to increment after each fetch. Defaults to `offset`.
 + `offset` (optional): the default iterator property. Defaults to 0. If the user opts for a different iterator value, it must be defined in the options hash (for instance, if you want to iterate through `pages` instead).
 + `item`: the property of the response hash you want returned after each fetch
++ `sync` (optional): determines whether or not to wait until the last response is done before fetching again. Defaults to false. If `sync` is set to false than you must manually call `next` after each successful fetch.
 + `until` (optional): sets the max iterator value the fetcher will reach before stopping. If the user doesn't define a `condition` function on the class then this value will be used to determine when to stop.
 + `verbose/silent`: determines whether the user receives debug messages.
 
@@ -82,8 +85,11 @@ The following functions are called and configured "automagically" unless they ar
 + `condition`: returns a true or false value which determines whether or not to continue fetching.
 + `fetch`: an async function which will be called with the arguments provided by the user, defaults to fetching with the `offset` and `limit` as its arguments.
 + `step`: increments the `iterator` item by a user defined value, defaults to incrementing `offset` by `limit`.
++ `next`:
 
 # Examples
+
+Below are some examples demonstrating multiple ways of defining Tumblr Source classes.
 
 ## Instantiating the `Source` class:
 
