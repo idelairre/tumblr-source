@@ -1,6 +1,6 @@
 # Tumblr Source
 
-Utility to download a bunch of data from Tumblr. Basically a modular version of https://github.com/Leeiio/tumblr-downloader refactored to use events and to work in a browser environment.
+Fetcher utility to download a bunch of data from Tumblr. Basically a modular version of https://github.com/Leeiio/tumblr-downloader refactored to use events and to work in a browser environment.
 
 The philosophy is to have a sparse and reusable class that gracefully handles Tumblr's api limits and allows you to plug in whatever fetch function you want. **Note: this does not replace the Tumblr.js client, you either need to define your own fetch method or use tumblr's client to handle ajax requests**.
 
@@ -68,7 +68,7 @@ source.start();
 
 # Configuration
 
-Configuration is done by defining an `options` object in the class constructor with the below properties (e.g., `// in the constructor... this.options = { item: 'posts', offset: 0 };` or by passing an options object as a hash when initializing a new `Source` object (e.g., `new Source({ iterator: 'blah', item: 'posts' });`).
+Configuration is done by defining an `options` object in the class constructor with the below properties (e.g., `// in the constructor... this.options = { item: 'posts', offset: 0 };` or by passing an options object as a hash when initializing a new `Source` object (e.g., `new Source({ iterator: 'offset', item: 'posts' });`).
 
 + `iterator`: the property you want to increment after each fetch. Defaults to `offset`.
 + `offset` (optional): the default iterator property. Defaults to 0. If the user opts for a different iterator value, it must be defined in the options hash (for instance, if you want to iterate through `pages` instead).
@@ -125,7 +125,7 @@ This is a contrived example but you can configure and define  everything with de
 
 ```
 import client from './tumblr';
-import Source from '../src/source';
+import Source from 'tumblr-source';
 import { Condition, Fetch, Options, Load, Parse, Step, Verbose } from '../src/decorators';
 
 // run condition

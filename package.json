@@ -62,6 +62,6 @@
   },
   "dependencies": {
     "eventemitter3": "^1.2.0",
-    "reflect-metadata": "^0.1.8",
+    "reflect-metadata": "^0.1.8"
   }
 }
