@@ -1,3 +1,1 @@
-import * as TumblelogGenerator from '../src/blog';
-
-// console.log(JSON.stringify(TumblelogGenerator.generateUsers(30), null, 3));
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;

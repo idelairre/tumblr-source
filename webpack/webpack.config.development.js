@@ -7,9 +7,9 @@ var config = Object.create(baseConfig);
 config.plugins = [
   new webpack.optimize.OccurenceOrderPlugin(),
   new webpack.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify('development'),
-    Promise:require('es6-promise').Promise
-  })
+    'process.env.NODE_ENV': JSON.stringify('development')
+  }),
+  new webpack.optimize.DedupePlugin()
 ];
 
 module.exports = config;

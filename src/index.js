@@ -1,8 +1,3 @@
-import * as FollowerGenerator from './endpoints/blog/followers/followerGenerator';
+import Source from './source';
 
-const followers = FollowerGenerator.generateFollowersResponse({
-  limit: 10,
-  offset: 0
-});
-
-console.log(JSON.stringify(followers, null, 3));
+export default Source;

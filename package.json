@@ -1,5 +1,5 @@
 {
-  "name": "tumblelog-generator",
+  "name": "tumblr-source",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
@@ -12,31 +12,32 @@
   "scripts": {
     "clean": "rimraf lib dist",
     "lint": "eslint src test",
-    "start": "babel-node src/blog.js",
     "test": "karma start karma/karma.config.development.js",
     "test:teamcity": "karma start karma/karma.config.production.js",
-    "build:umd": "webpack src/index.js dist/tumblelog-generator.js --config webpack/webpack.config.development.js",
-    "build:umd:min": "webpack src/index.js dist/tumblelog-generator.min.js --config webpack/webpack.config.production.js",
-    "build": "npm run clean && npm run build:umd && npm run build:umd:min"
+    "build:umd": "webpack src/index.js --config webpack/webpack.config.development.js",
+    "build:umd:min": "webpack src/index.js --config webpack/webpack.config.production.js",
+    "build": "npm run clean && npm run build:umd:min"
   },
-  "npmName": "tumblelog-generator",
+  "npmName": "tumblr-source",
   "author": "Ian Delairre <idelairre@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/idelairre/tumblelog-generator"
+    "url": "git+https://github.com/idelairre/tumblr-source"
   },
   "bugs": {
-    "url": "https://github.com/idelairre/tumblelog-generator/issues"
+    "url": "https://github.com/idelairre/tumblr-source/issues"
   },
   "keywords": [
-    "tumblelog-generator"
+    "tumblr",
+    "data source"
   ],
   "devDependencies": {
     "babel-core": "^6.7.2",
     "babel-eslint": "^4.1.0",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-class-properties": "^6.9.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-runtime": "^6.5.x",
@@ -55,27 +56,16 @@
     "webpack": "^1.12.13"
   },
   "dependencies": {
+    "axios": "^0.13.1",
     "babel-cli": "^6.11.4",
     "babel-polyfill": "^6.9.1",
-    "es6-promise": "latest",
-    "faker": "^3.1.0",
-    "gingerbread": "^0.5.0",
-    "lodash": "^4.2.1",
-    "markovchain": "^1.0.2",
-    "natural": "^0.4.0",
-    "nlp-corpus": "0.0.4",
-    "nlp-syllables": "0.0.5",
-    "nlp_compromise": "^6.5.0",
-    "pos": "^0.3.0",
-    "random-words": "0.0.1",
-    "raw-loader": "^0.5.1",
-    "sentencer": "^0.1.5",
-    "speller": "^1.0.1",
-    "synaptic": "^1.0.8",
-    "tensify": "0.0.2",
-    "typo-js": "^1.0.1",
-    "word2vec": "^1.1.0",
-    "wordnet-db": "^3.1.2",
-    "wordnetjs": "^0.3.0"
+    "constant-fox": "git+https://github.com/idelairre/ConstantFox.git",
+    "eventemitter3": "^1.2.0",
+    "jsesc": "^2.2.0",
+    "karma-chrome-launcher": "^1.0.1",
+    "phantom": "^2.1.14",
+    "reflect-metadata": "^0.1.8",
+    "sanitize-html": "^1.13.0",
+    "tumblr.js": "^1.1.1"
   }
 }
