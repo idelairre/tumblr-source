@@ -120,7 +120,7 @@ This is a contrived example but you can configure and define  everything with de
 ```
 import client from './tumblr';
 import Source from '../src/source';
-import { Condition, DecorateFn, Fetch, Options, Load, Parse, Step, Verbose } from '../src/decorators';
+import { Condition, Fetch, Options, Load, Parse, Step, Verbose } from '../src/decorators';
 
 // run condition
 
