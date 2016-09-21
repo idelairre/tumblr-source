@@ -2,7 +2,7 @@
   "name": "tumblr-source",
   "version": "0.0.1",
   "description": "",
-  "main": "lib/index.js",
+  "main": "lib/tumblrSource.js",
   "jsnext:main": "src/index.js",
   "files": [
     "dist",
@@ -16,7 +16,7 @@
     "test:teamcity": "karma start karma/karma.config.production.js",
     "build:umd": "webpack src/index.js --config webpack/webpack.config.development.js",
     "build:umd:min": "webpack src/index.js --config webpack/webpack.config.production.js",
-    "build": "npm run clean && npm run build:umd:min"
+    "build": "npm run clean && npm run build:umd && npm run build:umd:min"
   },
   "npmName": "tumblr-source",
   "author": "Ian Delairre <idelairre@gmail.com>",
@@ -61,7 +61,6 @@
     "webpack": "^1.12.13"
   },
   "dependencies": {
-    "eventemitter3": "^1.2.0",
-    "reflect-metadata": "^0.1.8"
+    "eventemitter3": "^1.2.0"
   }
 }
