@@ -62,12 +62,20 @@ export default class Source extends EventEmitter {
 
 		this.debug = debug;
 
-    this.initialize();
+		this.on('continue', ::this.run);
+		this.on('done', () => {
+			this.stopFlag = false;
+		});
+		this.once('initialized', () => { // restores save state if the user is loading it via a decorator
+			setTimeout(() => {
+				if (!this.loadedSaveState) {
+					Object.assign(this.options, this._storedOptions);
+					this.loadedSaveState = true;
+				}
+			}, 0);
+		});
 
-    this.on('continue', ::this.run);
-    this.on('done', () => {
-      this.stopFlag = false;
-    });
+    this.initialize();
   }
 
 	set silent (newVal) {
@@ -113,17 +121,26 @@ export default class Source extends EventEmitter {
     }
   }
 
-  load() {
-    const opts = typeof this._load === 'function' ? this._load() : undefined;
-    if (typeof opts !== 'undefined') {
-			this.options = {};
+  load(options) {
+    let opts;
+		if (typeof this._load === 'function') {
+			opts = this._load();
+		} else if (typeof this._load === 'object') {
+			opts = this._load;
+		} else {
+			opts = options;
+		}
+
+    if (typeof this.options !== 'undefined') {
       for (const key in opts) {
         if ({}.hasOwnProperty.call(opts, key) && opts[key]) {
           this.options[key] = opts[key];
         }
       }
-    }
-    this.loadedSaveState = true;
+			this.loadedSaveState = true;
+    } else {
+			this._storedOptions = opts;
+		}
     this.emit('loaded');
   }
 
@@ -133,6 +150,7 @@ export default class Source extends EventEmitter {
 
   start(options) {
     this.debug.log('starting ...');
+		this.emit('start');
 		this.stopFlag = false;
     if (options) {
       Object.assign(this.options, options);

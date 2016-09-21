@@ -1,15 +1,15 @@
+import constants from './constants';
 import client from './tumblr';
 import Source from '../src/source';
 import { Condition, DecorateFn, Fetch, Options, Load, Parse, Step, Verbose } from '../src/decorators';
-import { writeToDisk } from './helpers';
 
-/**
-* The following is a node example of an extensible tumblr-source class using decorators.
-* A good use-case would be when you want to keep fetching configuration out of the class.
-* It will fetch the authenticated user's dashboard until it reaches 100 posts or errors out
-*/
-
-// define run condition
+constants.set({
+  offset: 50,
+  limit: 10,
+  until: 100,
+  iterator: 'offset',
+  item: 'posts',
+});
 
 function condition() {
   if (this.options.until) {
@@ -17,8 +17,6 @@ function condition() {
   }
   return true;
 }
-
-// action performed after each fetch
 
 function step() {
   this.options.offset += this.options.limit;
@@ -35,6 +33,7 @@ function step() {
 @Fetch(client.userDashboard)
 @Parse(data => data.posts)
 @Step(step)
+@Load(constants.toJSON())
 @Verbose()
 class DashboardSource extends Source { }
 
@@ -42,11 +41,8 @@ class DashboardSource extends Source { }
 
 const source = new DashboardSource();
 
-let posts = [];
-
 source.on('items', items => {
-  posts = posts.concat(items);
-  writeToDisk('./posts.json', posts);
+  console.log(`Offset: ${source.options.offset}`);
   source.next();
 });
 

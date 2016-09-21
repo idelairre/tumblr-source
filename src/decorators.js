@@ -36,6 +36,21 @@ export function Verbose(val = true) {
   }
 }
 
+export function Load(func) {
+  if (typeof func === 'function') {
+    return function (target) {
+      target.prototype._load = func();
+      return target;
+    }
+  } else if (typeof func === 'object') {
+    const prop = func;
+    return function (target) {
+      target.prototype._load = prop;
+      return target;
+    }
+  }
+}
+
 
 export function DecorateFn(klass, name, fn) {
   name = decoratedFuncs.includes(name) ? `_${name}` : name;
@@ -49,8 +64,6 @@ export const Condition = decorateFn.bind(this, 'condition');
 export const Fetch = decorateFn.bind(this, '_fetch');
 
 export const Step = decorateFn.bind(this, 'step');
-
-export const Load = decorateFn.bind(this, '_load');
 
 export const Save = decorateFn.bind(this, '_save');
 
