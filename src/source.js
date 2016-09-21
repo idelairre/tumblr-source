@@ -116,6 +116,7 @@ export default class Source extends EventEmitter {
   load() {
     const opts = typeof this._load === 'function' ? this._load() : undefined;
     if (typeof opts !== 'undefined') {
+			this.options = {};
       for (const key in opts) {
         if ({}.hasOwnProperty.call(opts, key) && opts[key]) {
           this.options[key] = opts[key];
