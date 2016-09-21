@@ -7,8 +7,7 @@ var outputFile = libraryName + '.js';
 
 module.exports = {
   entry: {
-    source: './src/index.js',
-    decorators: './src/decorators.js'
+    source: './src/source.js'
   },
   devtool: 'source-map',
   output: {

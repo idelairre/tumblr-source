@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "",
   "main": "lib/tumblrSource.js",
-  "jsnext:main": "src/index.js",
   "files": [
     "dist",
     "lib",
@@ -14,8 +13,8 @@
     "lint": "eslint src test",
     "test": "karma start karma/karma.config.development.js",
     "test:teamcity": "karma start karma/karma.config.production.js",
-    "build:umd": "webpack src/index.js --config webpack/webpack.config.development.js",
-    "build:umd:min": "webpack src/index.js --config webpack/webpack.config.production.js",
+    "build:umd": "webpack src/source.js --config webpack/webpack.config.development.js",
+    "build:umd:min": "webpack src/source.js --config webpack/webpack.config.production.js",
     "build": "npm run clean && npm run build:umd && npm run build:umd:min"
   },
   "npmName": "tumblr-source",
@@ -61,6 +60,7 @@
     "webpack": "^1.12.13"
   },
   "dependencies": {
-    "eventemitter3": "^1.2.0"
+    "eventemitter3": "^1.2.0",
+    "lodash.pick": "^4.4.0"
   }
 }

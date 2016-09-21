@@ -1,5 +1,6 @@
 import EventEmitter from 'eventemitter3';
-import { pick } from 'lodash';
+import pick from 'lodash.pick';
+export Decorators from './decorators';
 
 let DEBUG = false;
 
@@ -16,7 +17,6 @@ Object.keys(console).forEach(key => {
 		};
 	}
 });
-
 
 export default class Source extends EventEmitter {
   static options = {
