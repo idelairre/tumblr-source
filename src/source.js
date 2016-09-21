@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3';
 import pick from 'lodash.pick';
-export Decorators from './decorators';
+export * from './decorators';
 
 let DEBUG = false;
 
