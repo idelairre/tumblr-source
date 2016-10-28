@@ -52,8 +52,6 @@ class BlogSource extends Source {
 
 const source = new BlogSource();
 
-let posts = [];
-
 source.on('items', items => {
   console.log(`Offset: ${source.options.offset}`);
   source.next();

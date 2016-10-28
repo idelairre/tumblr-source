@@ -18,6 +18,29 @@ Object.keys(console).forEach(key => {
 	}
 });
 
+function load(options) {
+	let opts;
+	if (typeof this._load === 'function') {
+		opts = this._load();
+	} else if (typeof this._load === 'object') {
+		opts = this._load;
+	} else {
+		opts = options;
+	}
+
+	if (typeof this.options !== 'undefined') {
+		for (const key in opts) {
+			if ({}.hasOwnProperty.call(opts, key) && opts[key]) {
+				this.options[key] = opts[key];
+			}
+		}
+		this.loadedSaveState = true;
+	} else {
+		this._storedOptions = opts;
+	}
+	this.emit('loaded');
+}
+
 export default class Source extends EventEmitter {
   static options = {
     blog: null,
@@ -29,6 +52,7 @@ export default class Source extends EventEmitter {
     url: null,
     until: null
   };
+	options = {};
   initialized = false;
   stopFlag = false;
   sync = false;
@@ -55,6 +79,13 @@ export default class Source extends EventEmitter {
 				this.silent = !args.options.verbose;
 			}
       Object.assign(this, pick(args, ['condition', 'parse', 'step', 'sync']));
+
+			if (typeof this.load === 'function') {
+				this.load();
+			} else {
+				this.load = load; // resort to default behavior where load is called by a decorator or explicitly
+			}
+
       this._fetch = typeof args.fetch === 'function' ? args.fetch : false;
       this._save = typeof args.save === 'function' ? args.save : false;
       this._load = typeof args.load === 'function' ? args.load : false;
@@ -121,28 +152,15 @@ export default class Source extends EventEmitter {
     }
   }
 
-  load(options) {
-    let opts;
-		if (typeof this._load === 'function') {
-			opts = this._load();
-		} else if (typeof this._load === 'object') {
-			opts = this._load;
-		} else {
-			opts = options;
+	loadConstants(constants, key, func) {
+		this.constants = constants;
+		if (this.constants.get(key)) {
+			Object.assign(this.options, this.constants.get(key));
 		}
-
-    if (typeof this.options !== 'undefined') {
-      for (const key in opts) {
-        if ({}.hasOwnProperty.call(opts, key) && opts[key]) {
-          this.options[key] = opts[key];
-        }
-      }
-			this.loadedSaveState = true;
-    } else {
-			this._storedOptions = opts;
+		if (func) {
+			func.call(this);
 		}
-    this.emit('loaded');
-  }
+	}
 
   save() {
     return this._save(this.options);
@@ -206,7 +224,7 @@ export default class Source extends EventEmitter {
     });
   }
 
-  async run(retry) {
+  async run(retry = false) {
     try {
       if (this.stopFlag) {
         return this.done(this.STOP_FLAG_MESSAGE);
@@ -215,15 +233,20 @@ export default class Source extends EventEmitter {
       if (!this.condition()) { // NOTE: condition represents what must be true for run to crawl
         return this.done(this.STOP_CONDITION_MESSAGE);
       }
+
 			this.debug.log('crawling...');
+
       const items = await this.crawl({
         iterator: this.options.iterator,
         item: this.options.item
       }, retry);
+
       this.retriedTimes = 0;
+
       if (typeof this.step === 'function') {
         this.step();
       }
+
       this.emit('items', items);
       if (typeof items === 'undefined') {
         return this.done(this.UNDEFINED_RESPONSE_MESSAGE);
@@ -240,7 +263,10 @@ export default class Source extends EventEmitter {
     }
     if (this.sync && !this.stopFlag) {
       return this.run(retry);
-    } else if (this.stopFlag) {
+    } else if (this.sync && this.stopFlag) {
+			return this.done(this.STOP_FLAG_MESSAGE);
+		}
+		if (this.stopFlag) {
       return this.done(this.STOP_FLAG_MESSAGE);
     }
     this.emit('next'); // flags when the next run should be called for tests

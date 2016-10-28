@@ -1,4 +1,9 @@
 {
-  "presets": ["es2015", "stage-0"],
-  "plugins": ["transform-decorators-legacy", "transform-class-properties", "transform-function-bind"]
+  "passPerPreset": true,
+  "presets": [{
+    "plugins": ["transform-decorators-legacy", "transform-class-properties", "transform-function-bind", "transform-runtime"]
+  }, {
+    "passPerPreset": false,
+    "presets": ["es2015", "stage-0"]
+  }]
 }

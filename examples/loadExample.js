@@ -1,7 +1,6 @@
 import constants from './constants';
 import client from './tumblr';
 import Source from '../src/source';
-import { writeToDisk } from './helpers';
 
 /**
 * The following is a node example of an extensible tumblr-source class.

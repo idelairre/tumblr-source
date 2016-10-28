@@ -1,6 +1,6 @@
 import client from './tumblr';
 import Source from '../src/source';
-import { writeToDisk } from './helpers';
+import { sanitize, writeToDisk } from './helpers';
 
 /**
 * The following is a node example of an extensible tumblr-source class.
@@ -17,7 +17,7 @@ class BlogSource extends Source {
       limit: 10,
       iterator: 'offset',
       item: 'posts',
-      until: 100,
+      until: 1000,
     };
     this.silent = false;
   }
@@ -32,7 +32,8 @@ class BlogSource extends Source {
 
   async fetch() {
     try {
-      const posts = await client.blogPosts('luxfoks', {
+      const posts = await client.blogPosts('hypocrite-lecteur', {
+        type: 'text',
         offset: this.options.offset,
         limit: this.options.limit
       });
@@ -53,7 +54,6 @@ let posts = [];
 
 source.on('items', items => {
   posts = posts.concat(items);
-  writeToDisk('./blogPosts.json', posts);
   source.next();
 });
 
@@ -62,7 +62,11 @@ source.on('error', msg => {
 });
 
 source.on('done', msg => {
-  console.log('[DONE]', msg);
+  let text = '';
+  posts.forEach(post => {
+    text += `${sanitize(post.body)}\n`;
+  });
+  writeToDisk('input.txt', text);
 });
 
 source.start();

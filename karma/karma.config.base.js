@@ -1,15 +1,18 @@
-var path = require('path');
-
 'use strict';
+
+var path = require('path');
 
 module.exports = {
   basePath: '../',
   autoWatch: false,
   singleRun: true,
   colors: true,
-  frameworks: ['jasmine'],
+  frameworks: ['jasmine', 'sinon'],
   browsers: ['Chrome'],
-  files: ['./test/**/*.spec.js'],
+  files: [{
+    pattern: './test/entry.spec.js',
+    watched: false
+  }],
   preprocessors: {
     './test/**/*.spec.js': ['webpack']
   },
@@ -40,6 +43,13 @@ module.exports = {
     }
   },
   webpackMiddleware: {
-    noInfo: true
+    stats: {
+      chunks: false,
+      errors: false,
+      colors: true,
+      modules: false,
+      noInfo: true,
+      warnings: false
+    }
   }
 }
