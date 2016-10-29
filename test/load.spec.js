@@ -16,10 +16,25 @@ const constants = new Constants({
 });
 
 class TestSource extends Source {
+  options = {
+    offset: 0,
+    limit: 10,
+    iterator: 'offset',
+    item: 'posts',
+    until: 1000
+  };
+
+  constructor() {
+    super();
+  }
+
   fetch() {
-    return Generator.posts.generateMany(10);
-  },
+    return Generator.posts.generateMany(5);
+  }
+
   load() {
+    this.loadConstants(constants);
+
     if (this.constants.get('nextBlogSourceSlug')) {
       Object.assign(this.options, this.constants.get('nextBlogSourceSlug'));
     }
@@ -29,7 +44,7 @@ class TestSource extends Source {
   }
 };
 
-describe('Source', () => {
+describe('Load', () => {
   describe('constructor()', () => {
     it ('should work', () => {
       const source = new TestSource();
@@ -38,9 +53,24 @@ describe('Source', () => {
   });
 
   describe('load()', () => {
-    it ('should allow load logic to load defined in the extended Source class', () => {
+    // it ('should automatically be called on initialization', () => {
+    //   const source = new TestSource();
+    //
+    //   spyOn(source, 'load').and.callThrough();
+    //
+    //   setTimeout(() => {
+    //     expect(source.load).toHaveBeenCalled();
+    //   }, 0);
+    // });
+
+    it ('should allow load logic to be defined in the extended Source class', () => {
       const source = new TestSource();
-      expect(source.options.url).toEqual('https://www.tumblr.com/blog/luxfoks');
+
+      setTimeout(() => {
+        expect(source.constants).toBeDefined();
+        expect(source.options.offset).toEqual(5);
+        expect(source.options.url).toEqual('https://www.tumblr.com/blog/luxfoks');
+      }, 0);
     });
   });
 });

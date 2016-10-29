@@ -21,7 +21,7 @@ class TestSource extends Source {
   }
 };
 
-describe('Source', () => {
+describe('Constants', () => {
   describe('constructor()', () => {
     it ('should work', () => {
       const source = new TestSource();

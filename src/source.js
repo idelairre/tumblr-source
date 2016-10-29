@@ -80,12 +80,6 @@ export default class Source extends EventEmitter {
 			}
       Object.assign(this, pick(args, ['condition', 'parse', 'step', 'sync']));
 
-			if (typeof this.load === 'function') {
-				this.load();
-			} else {
-				this.load = load; // resort to default behavior where load is called by a decorator or explicitly
-			}
-
       this._fetch = typeof args.fetch === 'function' ? args.fetch : false;
       this._save = typeof args.save === 'function' ? args.save : false;
       this._load = typeof args.load === 'function' ? args.load : false;
@@ -105,6 +99,12 @@ export default class Source extends EventEmitter {
 				}
 			}, 0);
 		});
+
+		if (typeof this.load === 'function') {
+			this.load();
+		} else {
+			this.load = load; // resort to default behavior where load is called by a decorator or explicitly
+		}
 
     this.initialize();
   }
@@ -126,6 +126,7 @@ export default class Source extends EventEmitter {
     if (this.options) {
       this.defaults = Object.assign({}, this.options);
     }
+
     if (typeof this.condition === 'undefined') {
       this.debug.warn(`no condition set for ${this.options.item}, using default condition`);
       this.condition = () => {

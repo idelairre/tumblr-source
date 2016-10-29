@@ -14,7 +14,7 @@ const args = {
     until: true
   },
   fetch() {
-    return Generator.posts.generateMany(10);
+    return Generator.posts.generateMany(5);
   },
   parse(items) {
     return items;
@@ -72,14 +72,14 @@ describe('Source', () => {
     });
   });
 
-  describe('fetch()', () => {
-    it ('should fetch items', done => {
-      const source = new Source(args);
-      source.fetch().then(response => {
-        expect(response).toBeDefined();
-        done();
-      });
-    });
+  describe('fetch()', () => { // TODO: add tests for error handling and success
+    // it ('should fetch items', done => {
+    //   const source = new Source(args);
+    //   source.fetch().then(response => {
+    //     expect(response).toBeDefined();
+    //     done();
+    //   });
+    // });
 
     it ('should call parse() if it is defined', done => {
       const source = new Source(args);
