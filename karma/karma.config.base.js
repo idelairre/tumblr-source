@@ -17,6 +17,7 @@ module.exports = {
     './test/**/*.spec.js': ['webpack']
   },
   webpack: {
+    devtool: 'cheap-module-source-map',
     module: {
       noParse: /node_modules\/json-schema\/lib\/validate\.js/,
       preLoaders: [{

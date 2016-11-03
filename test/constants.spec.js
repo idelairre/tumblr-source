@@ -4,6 +4,8 @@ import Source from '../src/source';
 
 // jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
 
+localStorage.clear();
+
 const constants = new Constants({
   userName: 'luxfoks',
   nextBlogSourceSlug: {
@@ -12,7 +14,11 @@ const constants = new Constants({
     iterator: 'offset',
     item: 'posts',
     until: 1000
-  }
+  },
+  nextLikeSourceSlug: {
+    timestamp: null,
+    page: null
+  },
 });
 
 class TestSource extends Source {
@@ -26,6 +32,11 @@ describe('Constants', () => {
     it ('should work', () => {
       const source = new TestSource();
       expect(source).toBeDefined();
+    });
+
+    it ('should have an empty options hash', () => {
+      const source = new TestSource();
+      expect(source.options).toEqual({});
     });
   });
 
@@ -45,12 +56,27 @@ describe('Constants', () => {
 
     it ('should allow custom load function logic', () => {
       const source = new TestSource();
+      source.once('loaded', () => {
+        expect(source.options.url).toEqual('https://www.tumblr.com/blog/luxfoks');
+      });
       source.loadConstants(constants, 'nextBlogSourceSlug', function () {
         if (!this.options.url) {
           this.options.url = `https://www.tumblr.com/blog/${this.constants.get('userName')}`;
         }
       });
-      expect(source.options.url).toEqual('https://www.tumblr.com/blog/luxfoks');
+    });
+
+    it ('should accept multiple keys as an argument', () => {
+      const source = new TestSource();
+      source.once('loaded', () => {
+        expect(source.options.url).toEqual('https://www.tumblr.com/blog/luxfoks');
+        expect(source.options.timestamp).toEqual(null);
+      });
+      source.loadConstants(constants, ['nextBlogSourceSlug', 'nextLikeSourceSlug'], function () {
+        if (!this.options.url) {
+          this.options.url = `https://www.tumblr.com/blog/${this.constants.get('userName')}`;
+        }
+      });
     });
   });
 });

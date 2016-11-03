@@ -14,7 +14,7 @@ const args = {
     until: true
   },
   fetch() {
-    return Generator.posts.generateMany(5);
+    return Promise.resolve(Generator.posts(5));
   },
   parse(items) {
     return items;
@@ -73,17 +73,17 @@ describe('Source', () => {
   });
 
   describe('fetch()', () => { // TODO: add tests for error handling and success
-    // it ('should fetch items', done => {
-    //   const source = new Source(args);
-    //   source.fetch().then(response => {
-    //     expect(response).toBeDefined();
-    //     done();
-    //   });
-    // });
+    it ('should fetch items', done => {
+      const source = new Source(args);
+      source.fetch().then(response => {
+        expect(response).toBeDefined();
+        done();
+      });
+    });
 
     it ('should call parse() if it is defined', done => {
       const source = new Source(args);
-      spyOn(source, 'parse');
+      spyOn(source, 'parse').and.callThrough();
       source.fetch().then(() => {
         expect(source.parse).toHaveBeenCalled();
         done();

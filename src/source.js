@@ -155,12 +155,23 @@ export default class Source extends EventEmitter {
 
 	loadConstants(constants, key, func) {
 		this.constants = constants;
-		if (this.constants.get(key)) {
-			Object.assign(this.options, this.constants.get(key));
+		if (Array.isArray(key)) {
+			key.forEach(k => {
+				if (this.constants.get(k)) {
+					Object.assign(this.options, this.constants.get(k));
+				}
+			});
+		} else {
+			if (this.constants.get(key)) {
+				Object.assign(this.options, this.constants.get(key));
+			}
 		}
+
 		if (func) {
 			func.call(this);
 		}
+
+		this.emit('loaded');
 	}
 
   save() {
@@ -188,18 +199,22 @@ export default class Source extends EventEmitter {
 
   async fetch(args = { offset: this.options[this.options.iterator], limit: this.options.limit }) {
     try {
-      const response = await this._fetch.call(this, args);
-      return this.handleSuccess(response);
+			if (!this._fetch) {
+				throw new Error('Fetch not defined');
+			}
+			let response;
+			if (this._fetch instanceof Promise) {
+				response = await this._fetch(args);
+			} else {
+				response = this._fetch(args);
+			}
+			if (typeof this.parse === 'function') {
+				return Promise.resolve(this.parse(response));
+			}
+			return Promise.resolve(response);
     } catch (err) {
       return this.handleError(err);
     }
-  }
-
-  handleSuccess(data) {
-    if (typeof this.parse === 'function') {
-      return this.parse(data);
-    }
-    return data;
   }
 
   next() {

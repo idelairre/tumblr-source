@@ -1,6 +1,6 @@
 {
   "name": "tumblr-source",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "lib/tumblrSource.js",
   "files": [
@@ -55,7 +55,7 @@
     "karma-phantomjs-launcher": "latest",
     "karma-sinon": "^1.0.5",
     "karma-teamcity-reporter": "latest",
-    "karma-webpack": "^1.7.0",
+    "karma-webpack-with-fast-source-maps": "^1.10.0",
     "phantomjs": "^2.1.3",
     "rimraf": "^2.3.4",
     "sanitize-html": "^1.13.0",
