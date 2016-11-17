@@ -158,12 +158,12 @@ export default class Source extends EventEmitter {
 		if (Array.isArray(key)) {
 			key.forEach(k => {
 				if (this.constants.get(k)) {
-					Object.assign(this.options, this.constants.get(k));
+					this.options[k] = this.constants.get(k);
 				}
 			});
 		} else {
 			if (this.constants.get(key)) {
-				Object.assign(this.options, this.constants.get(key));
+				this.options[key] = this.constants.get(key);
 			}
 		}
 
