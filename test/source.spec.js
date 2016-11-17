@@ -5,6 +5,8 @@ import Source from '../src/source';
 
 // jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
 
+localStorage.clear();
+
 const args = {
   options: {
     url: 'https://www.tumblr.com/likes',

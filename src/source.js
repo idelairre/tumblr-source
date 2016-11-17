@@ -153,7 +153,7 @@ export default class Source extends EventEmitter {
     }
   }
 
-	loadConstants(constants, key, func) {
+	_initializeConstants(constants, key) {
 		if (Array.isArray(key)) {
 			for (let i = key.length - 1; i >= 0; i--) {
 				const val = constants.get(key[i]);
@@ -166,6 +166,14 @@ export default class Source extends EventEmitter {
 			if (val) {
 				Object.assign(this.options, val);
 			}
+		}
+	}
+
+	loadConstants(constants, key, func) {
+		if (constants.initialized()) {
+			this._initializeConstants(constants, key);
+		} else {
+			constants.once('initialized', ::this._initializeConstants(constants, key));
 		}
 
 		this.constants = constants;
