@@ -154,18 +154,21 @@ export default class Source extends EventEmitter {
   }
 
 	loadConstants(constants, key, func) {
-		this.constants = constants;
 		if (Array.isArray(key)) {
-			key.forEach(k => {
-				if (this.constants.get(k)) {
-					this.options[k] = this.constants.get(k);
+			for (let i = key.length - 1; i >= 0; i--) {
+				const val = constants.get(key[i]);
+				if (val) {
+					Object.assign(this.options, val);
 				}
-			});
+			}
 		} else {
-			if (this.constants.get(key)) {
-				this.options[key] = this.constants.get(key);
+			const val = constants.get(key);
+			if (val) {
+				Object.assign(this.options, val);
 			}
 		}
+
+		this.constants = constants;
 
 		if (func) {
 			func.call(this);
